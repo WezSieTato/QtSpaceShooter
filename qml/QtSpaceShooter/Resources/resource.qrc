@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Backgrounds/bg_front_spacedust.png</file>
+        <file>Backgrounds/bg_galaxy.png</file>
+        <file>Backgrounds/bg_planetsunrise.png</file>
+        <file>Backgrounds/bg_spacialanomaly.png</file>
+        <file>Backgrounds/bg_spacialanomaly2.png</file>
+        <file>Icons/icon-large@2x.png</file>
+        <file>Icons/icon-medium.png</file>
+        <file>Icons/icon-medium@2x.png</file>
+        <file>Icons/icon-small.png</file>
+        <file>Icons/icon-small@2x.png</file>
+        <file>Sounds/explosion_large.caf</file>
+        <file>Sounds/explosion_small.caf</file>
+        <file>Sounds/laser_enemy.caf</file>
+        <file>Sounds/laser_ship.caf</file>
+        <file>Sounds/powerup.caf</file>
+        <file>Sounds/shake.caf</file>
+        <file>Sounds/SpaceGame.caf</file>
+        <file>Sprites/asteroid.png</file>
+        <file>Sprites/enemy_spaceship.png</file>
+        <file>Sprites/laserbeam_blue.png</file>
+        <file>Sprites/laserbeam_red.png</file>
+        <file>Sprites/powerup.png</file>
+        <file>Sprites/SpaceFlier_lg_1.png</file>
+        <file>Sprites/SpaceFlier_lg_2.png</file>
+        <file>Sprites/SpaceFlier_med_1.png</file>
+        <file>Sprites/SpaceFlier_sm_1.png</file>
+        <file>Sprites/SpaceFlier_sm_2.png</file>
+    </qresource>
+</RCC>
