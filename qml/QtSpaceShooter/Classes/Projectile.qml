@@ -3,7 +3,6 @@ import QtQuick 2.0
 SpaceObject {
     z: 1
     id: root
-    property bool toRight : true
     property int velocity : 3
     property string source
 

@@ -27,6 +27,9 @@ Rectangle {
         }
     }
 
+    EnemyShip {
+    }
+
     Background{
 
     }

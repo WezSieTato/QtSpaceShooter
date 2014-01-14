@@ -4,13 +4,16 @@ SpaceObject {
     property int blinkValue : 20;
     property int blinkIter : 0;
     property int hp : 5
+    property string missileName : "Missile.qml"
 
     signal missileFired
 
     function fireMissile() {
-        var component = Qt.createComponent("Missile.qml");
+        var component = Qt.createComponent(missileName);
         var ny = (y + (height / 2));
-        var nx = x + (width - 40);
+        var nx = x ;
+        if(toRight)
+            nx += (width - 40);
         var sprite = component.createObject(parent, {x: nx, y: ny});
         missileFired.call()
         return sprite
