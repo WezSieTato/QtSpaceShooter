@@ -9,11 +9,15 @@ Rectangle {
     id: root
     property var friendlyMissiles
     property var asteroids
+    property var enemyShips
+    property var enemyMissiles
     property var ship
 
     Component.onCompleted: {
         friendlyMissiles = new Array()
         asteroids = new Array()
+        enemyShips = new Array()
+        enemyMissiles = new Array()
         ship = ship1
         Logic.game = root;
     }
@@ -27,15 +31,15 @@ Rectangle {
         }
     }
 
-    EnemyShip {
-    }
-
     Background{
 
     }
 
     Ship {
         id: ship1
+        onDying: {
+            console.log("game over")
+        }
     }
 
     SpaceLabel {
@@ -87,9 +91,23 @@ Rectangle {
         var nx = root.width;
         var sprite = component.createObject(parent, {x: nx});
         sprite.y = Helper.randomFromInterval(0, root.height - sprite.height);
-
-
+        sprite.targetAchieve.connect(projectileTargetAchieve)
         asteroids.push(sprite);
+    }
+
+    function createEnemyShip(){
+        var component = Qt.createComponent("EnemyShip.qml");
+        var sprite = component.createObject(parent, {});
+        enemyShips.push(sprite);
+        sprite.missileFired.connect(newEnemyMissile)
+    }
+
+    function newEnemyMissile(missile){
+        enemyMissiles.push(missile)
+    }
+
+    function projectileTargetAchieve(projectile){
+        Logic.remove(projectile)
     }
 
 }

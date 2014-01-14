@@ -1,10 +1,11 @@
 import QtQuick 2.0
 
 SpaceShip {
+    id: root
     pointValue: 25
     width: image.width
     height: image.height
-    missileName: "EnemyMissile"
+    missileName: "EnemyMissile.qml"
 
 
     Image {
@@ -13,11 +14,14 @@ SpaceShip {
     }
 
     Component.onCompleted: {
+        y = -height
+        x = parent.width - width
         animation.maxY = parent.height
         animation.dur = Math.abs(0 - parent.height ) * 5
-//        console.log(animation.maxY)
+//        console.log(parent.width - width)
         animation.running = true
         animation.start();
+        fireClock.start();
     }
 
     SequentialAnimation on y {
@@ -35,5 +39,13 @@ SpaceShip {
             to: 0 - height
             duration: animation.dur
         }
+    }
+
+    Timer{
+        id: fireClock
+        interval: 1000
+        repeat: true
+        running: false
+        onTriggered: root.fireMissile()
     }
 }

@@ -3,14 +3,8 @@
 .import "Helpers.js" as Helper
 
 var game;
-//var ship;
 var asteroidClock = 0
-
-Array.prototype.remove = function(from, to) {
-    var rest = this.slice((to || from) + 1 || this.length);
-    this.length = from < 0 ? this.length + from : from;
-    return this.push.apply(this, rest);
-};
+var enemyShipClock = 0
 
 function update() {
     var toDestroy = new Array();
@@ -22,9 +16,9 @@ function update() {
 
     game.asteroids.forEach(function(asteroid){
         //        console.log(asteroid.x)
-        if(asteroid.x + asteroid.width < 0){
-            toDestroy.push(asteroid)
-        } else {
+//        if(asteroid.x + asteroid.width < 0){
+//            toDestroy.push(asteroid)
+//        } else {
 
             if (Helper.isCollide(game.ship, asteroid)){
                 toDestroy.push(asteroid)
@@ -34,7 +28,7 @@ function update() {
 
                 game.friendlyMissiles.some(function(missile){
                     if(Helper.isCollide(missile,asteroid)){
-                        console.log("Zderzenie")
+//                        console.log("Zderzenie")
                         toDestroy.push(missile);
                         toDestroy.push(asteroid);
                         game.ship.point += asteroid.pointValue
@@ -42,25 +36,37 @@ function update() {
                     }
                 })
             }
+//        }
+    });
+
+    game.enemyShips.forEach(function(enemy){
+
+        if (Helper.isCollide(game.ship, enemy)){
+            toDestroy.push(enemy);
+            game.ship.getShot()
+            enemy.getShot()
         }
+        else{
+            game.friendlyMissiles.some(function(missile){
+                if(Helper.isCollide(missile,enemy)){
+
+                    toDestroy.push(missile);
+                    if(enemy.getShot()){
+                        game.ship.point += enemy.pointValue
+                        toDestroy.push(enemy);
+                    }
+
+                    return true
+                }
+            })
+        }
+
     });
 
     var len = toDestroy.length
     for(var i = 0; i < len; ++i){
         var victim = toDestroy.pop();
-        var index = game.friendlyMissiles.indexOf(victim);
-        if(index >= 0){
-            game.friendlyMissiles.splice(index, 1);
-        }
-
-        index = game.asteroids.indexOf(victim);
-        if(index >= 0){
-            game.asteroids.splice(index, 1);
-        }
-
-        victim.destroy();
-
-        //        console.log("usuwam ilosc laserow" + game.asteroids.length )
+        remove(victim)
     }
 
     if(asteroidClock > 0){
@@ -70,6 +76,37 @@ function update() {
         game.createAsteroid();
     }
 
+    if(enemyShipClock > 0){
+        enemyShipClock--
+    } else {
+        enemyShipClock = Helper.randomFromInterval(100, 300);
+        game.createEnemyShip();
+    }
+
+}
+
+function remove(victim){
+    var index = game.friendlyMissiles.indexOf(victim);
+    if(index >= 0){
+        game.friendlyMissiles.splice(index, 1);
+    }
+
+    index = game.asteroids.indexOf(victim);
+    if(index >= 0){
+        game.asteroids.splice(index, 1);
+    }
+
+    index = game.enemyShips.indexOf(victim);
+    if(index >= 0){
+        game.enemyShips.splice(index, 1);
+    }
+
+    index = game.enemyMissiles.indexOf(victim);
+    if(index >= 0){
+        game.enemyMissiles.splice(index, 1);
+    }
+
+    victim.destroy();
 }
 
 

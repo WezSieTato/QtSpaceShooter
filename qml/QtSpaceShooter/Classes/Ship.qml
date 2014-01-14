@@ -6,6 +6,7 @@ SpaceShip{
     id: root
     width: seq.width
     height: seq.height
+
     SpriteSequence{
         id: seq
         width: 120

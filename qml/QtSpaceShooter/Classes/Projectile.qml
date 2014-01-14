@@ -5,6 +5,7 @@ SpaceObject {
     id: root
     property int velocity : 3
     property string source
+    signal targetAchieve(var this_)
 
     width: image.width
     height: image.height
@@ -15,16 +16,22 @@ SpaceObject {
     }
 
     Component.onCompleted: {
-        animation.to =  (toRight ? parent.width : (-root.width))
-        animation.duration = Math.abs(animation.to - root.x ) * velocity
+        xAnimation.to =  (toRight ? parent.width : (-root.width))
+        xAnimation.duration = Math.abs(xAnimation.to - root.x ) * velocity
         animation.running = true
         animation.start();
     }
 
-    NumberAnimation on x{
+    SequentialAnimation on x {
         id: animation
         running: false
+        NumberAnimation {
+            id: xAnimation
+//            running: false
+        }
+        ScriptAction {
+            script: targetAchieve.call(root, root)
+        }
     }
-
 
 }
