@@ -28,6 +28,7 @@ Rectangle {
                 to: (width) * ((index) - 1)
                 loops: Animation.Infinite
                 duration: 8000;
+
             }
         }
     }

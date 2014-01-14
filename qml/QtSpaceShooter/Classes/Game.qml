@@ -2,17 +2,20 @@ import QtQuick 2.0
 import QtSensors 5.0
 
 import "Logic.js" as Logic
+import "Helpers.js" as Helper
+
 
 Rectangle {
     id: root
     property var friendlyMissiles
     property var asteroids
+    property var ship
 
     Component.onCompleted: {
         friendlyMissiles = new Array()
         asteroids = new Array()
+        ship = ship1
         Logic.game = root;
-        Logic.ship = ship
     }
 
     anchors.fill: parent
@@ -29,22 +32,26 @@ Rectangle {
     }
 
     Ship {
-        id: ship
+        id: ship1
     }
 
-    Text {
-        id: test
-        x: 55
-        y: 93
-        color: "#ffffff"
-        text : "Test"
+    SpaceLabel {
+        id: hplabel
+        anchors.left: parent.left
+        anchors.top: parent.top
+        text : "HP: " + ship1.hp
+    }
+
+    SpaceLabel {
+        anchors.right: parent.right
+        anchors.top: parent.top
+        text : "Points " + ship1.point
     }
 
     Accelerometer {
         alwaysOn: true
         active: true
         onReadingChanged: {
-//            test.text = "x: " + root.height + " y: " + ship.height
             ship.x = ship.x + -(reading.x / 3)
             ship.y = ship.y + (reading.y / 3)
 
@@ -74,9 +81,11 @@ Rectangle {
 
     function createAsteroid(){
         var component = Qt.createComponent("Asteroid.qml");
-        var sprite = component.createObject(parent, {});
-        sprite.y = 300;
-        sprite.x = root.width;
+        var nx = root.width;
+        var sprite = component.createObject(parent, {x: nx});
+        sprite.y = Helper.randomFromInterval(0, root.height - sprite.height);
+
+
         asteroids.push(sprite);
     }
 

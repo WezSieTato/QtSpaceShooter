@@ -1,6 +1,9 @@
 import QtQuick 2.0
 
-Image {
-    id: image
+Projectile {
+    pointValue: 5
+    velocity: 5
+    toRight: false
     source: "../Resources/Sprites/asteroid.png"
+
 }
