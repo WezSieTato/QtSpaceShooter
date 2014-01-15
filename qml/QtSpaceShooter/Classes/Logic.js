@@ -3,40 +3,28 @@
 .import "Helpers.js" as Helper
 
 var game;
-var asteroidClock = 0
-var enemyShipClock = 0
+var asteroidClock = 300
+var enemyShipClock = 600
+var powerUpClock = 900
 
 function update() {
     var toDestroy = new Array();
-    game.friendlyMissiles.forEach(function(missile){
-        if (missile.x > game.width)
-            toDestroy.push(missile);
-
-    })
-
+    //Kolizje
     game.asteroids.forEach(function(asteroid){
-        //        console.log(asteroid.x)
-//        if(asteroid.x + asteroid.width < 0){
-//            toDestroy.push(asteroid)
-//        } else {
-
-            if (Helper.isCollide(game.ship, asteroid)){
-                toDestroy.push(asteroid)
-                game.ship.getShot()
-            }
-            else{
-
-                game.friendlyMissiles.some(function(missile){
-                    if(Helper.isCollide(missile,asteroid)){
-//                        console.log("Zderzenie")
-                        toDestroy.push(missile);
-                        toDestroy.push(asteroid);
-                        game.ship.point += asteroid.pointValue
-                        return true
-                    }
-                })
-            }
-//        }
+        if (Helper.isCollide(game.ship, asteroid)){
+            toDestroy.push(asteroid)
+            game.ship.getShot()
+        }
+        else{
+            game.friendlyMissiles.some(function(missile){
+                if(Helper.isCollide(missile,asteroid)){
+                    toDestroy.push(missile);
+                    toDestroy.push(asteroid);
+                    game.ship.point += asteroid.pointValue
+                    return true
+                }
+            })
+        }
     });
 
     game.enemyShips.forEach(function(enemy){
@@ -63,12 +51,32 @@ function update() {
 
     });
 
+    game.enemyMissiles.forEach(function(missile){
+        if (Helper.isCollide(game.ship, missile)){
+            toDestroy.push(missile);
+            game.ship.getShot()
+        }
+
+    });
+
+    game.powerUps.forEach(function(powerUp){
+        if (Helper.isCollide(game.ship, powerUp)){
+            toDestroy.push(powerUp);
+            game.ship.hp += powerUp.hp
+            game.sounds.playPowerUp()
+        }
+
+    });
+
+    //Niszczenie
     var len = toDestroy.length
     for(var i = 0; i < len; ++i){
         var victim = toDestroy.pop();
         remove(victim)
     }
 
+
+    //Spawnowanie nowych
     if(asteroidClock > 0){
         asteroidClock--;
     } else {
@@ -79,35 +87,82 @@ function update() {
     if(enemyShipClock > 0){
         enemyShipClock--
     } else {
-        enemyShipClock = Helper.randomFromInterval(100, 300);
-        game.createEnemyShip();
+        var newShip = true
+        game.enemyShips.some(function(ship){
+            if(isBlockingSpawn(ship)){
+                newShip = false
+                return true
+            }
+        })
+
+        if(newShip){
+            enemyShipClock = Helper.randomFromInterval(100, 300);
+            game.createEnemyShip();
+        }
+    }
+
+    if(powerUpClock > 0){
+        powerUpClock--
+    } else {
+        powerUpClock = Helper.randomFromInterval(1000, 2000);
+        game.createPowerUp();
     }
 
 }
 
 function remove(victim){
-    var index = game.friendlyMissiles.indexOf(victim);
-    if(index >= 0){
-        game.friendlyMissiles.splice(index, 1);
-    }
+    if(! checkOrRemove(game.friendlyMissiles, victim))
+        if(!checkOrRemove(game.asteroids, victim))
+            if(!checkOrRemove(game.enemyShips, victim))
+                if(!checkOrRemove(game.enemyMissiles, victim))
+                    checkOrRemove(game.powerUps, victim)
 
-    index = game.asteroids.indexOf(victim);
-    if(index >= 0){
-        game.asteroids.splice(index, 1);
-    }
-
-    index = game.enemyShips.indexOf(victim);
-    if(index >= 0){
-        game.enemyShips.splice(index, 1);
-    }
-
-    index = game.enemyMissiles.indexOf(victim);
-    if(index >= 0){
-        game.enemyMissiles.splice(index, 1);
-    }
-
+//    console.log("Ilosc efriendlyMissiles: " + game.friendlyMissiles.length)
     victim.destroy();
 }
 
+function checkOrRemove(list, victim){
+    var index = list.indexOf(victim);
+    if(index >= 0){
+        list.splice(index, 1);
+        return true
+    }
+    return false
+}
 
+function isBlockingSpawn(ship){
+    return !(   ship.x + ship.width < game.width - ship.width  ||
+                game.width < ship.x  ||
+                 ship.y + ship.height < -ship.height  ||
+                 0 < ship.y)
+}
 
+function prepare(newGame){
+    game = newGame
+    game.friendlyMissiles = new Array()
+    game.asteroids = new Array()
+    game.enemyShips = new Array()
+    game.enemyMissiles = new Array()
+    game.powerUps = new Array()
+}
+
+function clean(){
+    asteroidClock = 300
+    enemyShipClock = 600
+    powerUpClock = 900
+
+    cleanArrat( game.friendlyMissiles)
+    cleanArrat( game.asteroids)
+    cleanArrat( game.enemyShips)
+    cleanArrat( game.enemyMissiles)
+    cleanArrat( game.powerUps)
+}
+
+function cleanArrat(array){
+    var len = array.length
+    for(var i = 0; i < len; ++i){
+        var victim = array.pop();
+        victim.destroy()
+    }
+    delete array
+}

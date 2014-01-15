@@ -1,9 +1,18 @@
 import QtQuick 2.0
 import QtQuick.Particles 2.0
+import QtMultimedia 5.0
+
+import "Helpers.js" as Helper
 
 Rectangle {
     anchors.fill: parent
     color: "#000000"
+
+    Audio{
+         source: "../Resources/Sounds/SpaceGame.mp3"
+         autoPlay: true
+         loops: Audio.Infinite
+    }
 
     Image {
         id: backgroundSource
@@ -14,11 +23,10 @@ Rectangle {
     }
 
     Repeater {
+        z : 2
         model: (parent.width / backgroundSource.width ) + 2
         Image {
-
             x: index * width
-            y: 0
             height: backgroundSource.height
             width: backgroundSource.width
             source: backgroundSource.source
@@ -28,16 +36,15 @@ Rectangle {
                 to: (width) * ((index) - 1)
                 loops: Animation.Infinite
                 duration: 8000;
-
             }
         }
     }
 
     Repeater {
         model: 3
+        z : 3
         ParticleSystem {
             anchors.fill: parent
-
 
             ImageParticle {
                 source: "../Resources/Particles/star" + (index + 1) + ".png" /*"Resources/Particles/star3.png"*/
@@ -60,6 +67,20 @@ Rectangle {
                 sizeVariation: (index == 1 ? 10 : (index == 2 ? 20 : 15))
                 endSize: 5
             }
+        }
+    }
+
+    Timer {
+        repeat: true
+        interval: 15000
+        running: true
+        triggeredOnStart: true
+        onTriggered: {
+            var component = Qt.createComponent("BgAnomaly.qml");
+            var num = Helper.randomFromInterval(1, 4)
+            var sprite = component.createObject(parent, {x : root.width, number : num});
+            sprite.y = Helper.randomFromInterval(0, root.height - sprite.height);
+            sprite.z = 1
         }
     }
 }

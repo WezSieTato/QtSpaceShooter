@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtMultimedia 5.0
 
 SpaceShip {
     id: root
@@ -6,12 +7,16 @@ SpaceShip {
     width: image.width
     height: image.height
     missileName: "EnemyMissile.qml"
+    explosionName : "small"
+    z : 3
 
 
     Image {
         id: image
         source: "../Resources/Sprites/enemy_spaceship.png"
     }
+
+
 
     Component.onCompleted: {
         y = -height
@@ -35,15 +40,23 @@ SpaceShip {
             to: animation.maxY
             duration: animation.dur
         }
+        ScriptAction{
+            script: x = parent.width - (2 * width )
+        }
+
         NumberAnimation{
             to: 0 - height
             duration: animation.dur
+        }
+
+        ScriptAction{
+            script: x = parent.width - (width )
         }
     }
 
     Timer{
         id: fireClock
-        interval: 1000
+        interval: 2000
         repeat: true
         running: false
         onTriggered: root.fireMissile()

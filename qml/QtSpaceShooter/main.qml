@@ -9,7 +9,7 @@ Rectangle {
     width: 512
     height: 374
 
-    Game{
+    SpaceShooter{
 
     }
 

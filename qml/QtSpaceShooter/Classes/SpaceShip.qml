@@ -5,9 +5,11 @@ SpaceObject {
     property int blinkIter : 0;
     property int hp : 5
     property string missileName : "Missile.qml"
+    property string explosionName : "large"
 
     signal missileFired(var missile)
     signal dying
+    signal shotted
 
     Timer{
         id : blinker
@@ -31,7 +33,6 @@ SpaceObject {
         var nx = x ;
         if(toRight)
             nx += (width - 40);
-//        console.log("fire" + ny)
 
         var component = Qt.createComponent(missileName);
         var sprite = component.createObject(parent, {x: nx, y: ny});
@@ -43,13 +44,11 @@ SpaceObject {
         hp--;
         blinkIter = 0;
         blinker.start();
-//        console.log("blink")
-
         if(hp == 0){
             dying.call()
             return true
         }
-        else
-            return false
+        shotted.call()
+        return false
     }
 }

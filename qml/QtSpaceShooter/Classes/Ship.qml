@@ -2,7 +2,7 @@ import QtQuick 2.0
 
 SpaceShip{
     property int point: 50
-
+    z : 1
     id: root
     width: seq.width
     height: seq.height
