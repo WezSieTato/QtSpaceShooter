@@ -8,6 +8,7 @@ QML_IMPORT_PATH =
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp
+QTPLUGIN += qtaudio_coreaudio qtmedia_audioengine qavfmediaplayer
 
 # Installation path
 # target.path =

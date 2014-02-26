@@ -6,6 +6,7 @@
 # may offer an updated version of it.
 
 QT += qml quick multimedia sensors
+QTPLUGIN += qtaudio_coreaudio qtmedia_audioengine qavfmediaplayer
 
 SOURCES += $$PWD/qtquick2applicationviewer.cpp
 HEADERS += $$PWD/qtquick2applicationviewer.h
